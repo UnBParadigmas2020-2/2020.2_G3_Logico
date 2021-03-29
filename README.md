@@ -13,9 +13,6 @@
 ## Sobre 
 O projeto resolve um problema combinacional famoso, que foi até transformado em jogo, o Sudoku, com o tabuleiro padrão de 9x9. Ele pode gerar tabuleiros válidos a partir de uma tabela em branco, encontrar soluções para tabelas parcialmente preenchidas e verificar a validade de tabelas completas.
 
-## Screenshots
-Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
-
 ## Instalação 
 **Linguagens**: Prolog<br>
 **Tecnologias**: SWI-Prolog<br>
@@ -61,7 +58,7 @@ A tabela utilizada nas opções de resolução e validação está presente no a
 No arquivo ```examples.txt``` há outras tabelas parcialmente completas e válidas. Basta substituir a tabela presente em ```sudoku.txt``` por alguma delas, caso o usuário queira testar diferentes respostas de maneira rápida.
 
 ## Vídeo
-Adicione 1 ou mais vídeos com a execução do projeto.
+Para ver o vídeo, basta acessar este [hyperlink](https://youtu.be/3n8zm8U-ayo).
 
 ## Outros 
 Devido a forma como o menu é implementado, não é possível utilizar a função de *backtracking* presente no Prolog. No entanto, caso o usuário deseje, basta testar cada predicado individualmente. Para isso, carregue o arquivo main.pl utilizando o comando:
@@ -78,4 +75,7 @@ Em sequência, basta testar o predicado desejado:
 Após testar um predicado, basta pressionar a tecla ```;``` continuamente para receber outras soluções, enquanto possível.
 
 ## Fontes
-Caso utilize materiais de terceiros, referencie-os adequadamente.
+> 1. [Metalevel.at](https://www.metalevel.at/). Acessado em 24/03/2021.
+> 2. [Sudoku](https://en.wikipedia.org/wiki/Sudoku). Acessado em 24/03/2021.
+> 3. [Prolog](https://www.swi-prolog.org/) Acessado em 24/03/2021.
+> 4. [Sudoku em Prolog](https://www.youtube.com/watch?v=5KUdEZTu06o) Acessado em 26/03/2021.
