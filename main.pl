@@ -101,7 +101,8 @@ squares([N1,N2,N3|Next1], [N4,N5,N6|Next2], [N7,N8,N9|Next3]) :-
 % Menu da aplicação.
 
 menu:- repeat,
-    write('=== MENU ==='), nl,
+    nl,
+    write('=== SUDOKU ==='), nl,
     write('1. Gerar sudoku aleatório.'), nl,
     write('2. Resolver sudoku (solução verbosa).'), nl,
     write('3. Resolver sudoku (solução concisa).'), nl,
@@ -110,28 +111,41 @@ menu:- repeat,
     read(X),
     option(X),
     X == 0,
+    nl,
     !.
 
 option(0):- !.
 option(1):-
+    nl,
     sudoku_short(L),
     maplist(label, L),
     forall(member(R,L), (print(R),nl)),
     menu.
 option(2):-
     get_lines(L, 'sudoku.txt'),
-    time(sudoku_extensive(L)),
-    forall(member(R,L), (print(R),nl)),
+    is_valid(L),
+    get_lines(P, 'sudoku.txt'),
+    time(sudoku_extensive(P)),
+    forall(member(R,P), (print(R),nl)),
     menu.
 option(3):-
     get_lines(L, 'sudoku.txt'),
-    time(sudoku_short(L)),
-    maplist(label, L),
-    forall(member(R,L), (print(R),nl)).
+    is_valid(L),
+    get_lines(P, 'sudoku.txt'),
+    time(sudoku_short(P)),
+    maplist(label, P),
+    forall(member(R,P), (print(R),nl)).
 option(4):-
     get_lines(L, 'sudoku.txt'),
-    sudoku_short(L).
+    is_valid(L).
 option(5):- halt(0).
+
+% Valida se o sudoku fornecido respeita os fatos estabelecidos.
+is_valid(L):- (
+    sudoku_short(L) ->
+    nl, write('O sudoku fornecido é válido.'), nl; 
+    nl, write('O sudoku fornecido não é válido.'), nl, menu
+    ).
 
 % Leitura de arquivo.
 
