@@ -1,16 +1,11 @@
 :- use_module(library(clpfd)).
 :- use_module(library(dcg/basics), except([eos/2])).
-
-% Solução verbosa para um problema combinacional famoso: o sudoku.
-% Essa solução utiliza o módulo clpfd.
-
-solve(P):-
-    sudoku(P),
-    forall(member(R,P), (print(R),nl)).
+:- use_module(library(statistics)).
     
 % Solução verbosa, porém eficiente de se resolver a tabela 9x9 de sudoku.
 
-sudoku([[A1,B1,C1,D1,E1,F1,G1,H1,I1],
+sudoku_extensive([
+        [A1,B1,C1,D1,E1,F1,G1,H1,I1],
         [A2,B2,C2,D2,E2,F2,G2,H2,I2],
         [A3,B3,C3,D3,E3,F3,G3,H3,I3],
         [A4,B4,C4,D4,E4,F4,G4,H4,I4],
@@ -18,7 +13,8 @@ sudoku([[A1,B1,C1,D1,E1,F1,G1,H1,I1],
         [A6,B6,C6,D6,E6,F6,G6,H6,I6],
         [A7,B7,C7,D7,E7,F7,G7,H7,I7],
         [A8,B8,C8,D8,E8,F8,G8,H8,I8],
-        [A9,B9,C9,D9,E9,F9,G9,H9,I9]]):-
+        [A9,B9,C9,D9,E9,F9,G9,H9,I9]
+        ]):-
     
     Vars = [A1,B1,C1,D1,E1,F1,G1,H1,I1,
             A2,B2,C2,D2,E2,F2,G2,H2,I2,
@@ -68,40 +64,82 @@ sudoku([[A1,B1,C1,D1,E1,F1,G1,H1,I1],
     all_different([G7,G8,G9,H7,H8,H9,I7,I8,I9]),
     label(Vars).
 
+/* Solulção não verbosa. Nesta solução, assim como na solução verbosa, o sudoku é representado como sendo uma
+lista de listas (as linhas da grade) de tamanho 9, ambas. São 9 linhas ao todo, cada uma com 9 elementos.
+*/
+sudoku_short(Rows) :-
+
+    % Define o número de linhas da grade.
+    length(Rows, 9),
+
+    % Define o número de elementos em cada linha.
+    maplist(same_length(Rows), Rows),
+
+    % Adiciona todas as linhas na lista Sudoku e determina que os valores na lista variam entre 1 e 9.
+    append(Rows, Sudoku),
+    Sudoku ins 1..9,
+
+    % Determina que não podem haver elementos repetidos em uma dada linha ou em uma dada coluna (linhas transpostas).
+    maplist(all_distinct, Rows),
+    transpose(Rows, Columns),
+    maplist(all_distinct, Columns),
+
+    % Divide as linhas do Sudoku em blocos de três linhas cada.
+    Rows = [As, Bs, Cs, Ds, Es, Fs, Gs, Hs, Is],
+    squares(As, Bs, Cs),
+    squares(Ds, Es, Fs),
+    squares(Gs, Hs, Is).
+
+/*Predicado que define os subgrupos na tabela do Sudoku.
+Para cada grupo de três linhas, os três primeiros elementos
+de cada linha devem ser todos distintos entre si. Na sequência,
+os próximos três elementos de cada linha e assim por diante.
+Interrompe ao chegar no final das linhas (listas vazias).*/
+squares([], [], []).
+squares([N1,N2,N3|Next1], [N4,N5,N6|Next2], [N7,N8,N9|Next3]) :-
+        all_distinct([N1,N2,N3,N4,N5,N6,N7,N8,N9]),
+        squares(Next1, Next2, Next3).
+
 % Menu da aplicação.
 
 menu:- repeat,
     write('=== MENU ==='), nl,
     write('1. Gerar sudoku aleatório.'), nl,
-    write('2. Resolver sudoku.'), nl,
-    write('3. Validar sudoku.'), nl,
-    write('4. Encerrar.'), nl,
+    write('2. Resolver sudoku (solução verbosa).'), nl,
+    write('3. Resolver sudoku (solução não verbosa).'), nl,
+    write('4. Validar sudoku.'), nl,
+    write('5. Encerrar.'), nl,
     read(X),
     option(X),
     X == 0,
     !.
 
 option(0):- !.
-option(2):- 
-    getLines(L, 'example1.txt'),
-    solve(L).
-option(4):- halt(0).
+option(2):-
+    get_lines(L, 'sudoku.txt'),
+    time(sudoku_extensive(L)),
+    forall(member(R,L), (print(R),nl)).
+option(3):-
+    get_lines(L, 'sudoku.txt'),
+    time(sudoku_short(L)),
+    forall(member(R,L), (print(R),nl)).
+option(5):- halt(0).
 
 % Leitura de arquivo.
 
-getLines(L, Path):-
+get_lines(L, Path):-
     setup_call_cleanup(
       open(Path, read, In),
-      readData(In, L),
+      read_data(In, L),
       close(In)
     ).
   
-  readData(In, L):-
+  read_data(In, L):-
     read_term(In, H, []),
     (   H == end_of_file
     ->  L = []
     ;   L = [H|T],
-        readData(In,T)
+        read_data(In,T)
     ).
     
 main:-
