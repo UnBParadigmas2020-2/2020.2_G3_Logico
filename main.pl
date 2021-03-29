@@ -1,6 +1,4 @@
 :- use_module(library(clpfd)).
-:- use_module(library(dcg/basics), except([eos/2])).
-:- use_module(library(statistics)).
     
 % Solução verbosa, porém eficiente de se resolver a tabela 9x9 de sudoku.
 
@@ -64,7 +62,7 @@ sudoku_extensive([
     all_different([G7,G8,G9,H7,H8,H9,I7,I8,I9]),
     label(Vars).
 
-/* Solulção não verbosa. Nesta solução, assim como na solução verbosa, o sudoku é representado como sendo uma
+/* Solução concisa. Nesta solução, assim como na solução verbosa, o sudoku é representado como sendo uma
 lista de listas (as linhas da grade) de tamanho 9, ambas. São 9 linhas ao todo, cada uma com 9 elementos.
 */
 sudoku_short(Rows) :-
@@ -76,8 +74,8 @@ sudoku_short(Rows) :-
     maplist(same_length(Rows), Rows),
 
     % Adiciona todas as linhas na lista Sudoku e determina que os valores na lista variam entre 1 e 9.
-    append(Rows, Sudoku),
-    Sudoku ins 1..9,
+    append(Rows, Frame),
+    Frame ins 1..9,
 
     % Determina que não podem haver elementos repetidos em uma dada linha ou em uma dada coluna (linhas transpostas).
     maplist(all_distinct, Rows),
@@ -106,7 +104,7 @@ menu:- repeat,
     write('=== MENU ==='), nl,
     write('1. Gerar sudoku aleatório.'), nl,
     write('2. Resolver sudoku (solução verbosa).'), nl,
-    write('3. Resolver sudoku (solução não verbosa).'), nl,
+    write('3. Resolver sudoku (solução concisa).'), nl,
     write('4. Validar sudoku.'), nl,
     write('5. Encerrar.'), nl,
     read(X),
@@ -115,14 +113,24 @@ menu:- repeat,
     !.
 
 option(0):- !.
+option(1):-
+    sudoku_short(L),
+    maplist(label, L),
+    forall(member(R,L), (print(R),nl)),
+    menu.
 option(2):-
     get_lines(L, 'sudoku.txt'),
     time(sudoku_extensive(L)),
-    forall(member(R,L), (print(R),nl)).
+    forall(member(R,L), (print(R),nl)),
+    menu.
 option(3):-
     get_lines(L, 'sudoku.txt'),
     time(sudoku_short(L)),
+    maplist(label, L),
     forall(member(R,L), (print(R),nl)).
+option(4):-
+    get_lines(L, 'sudoku.txt'),
+    sudoku_short(L).
 option(5):- halt(0).
 
 % Leitura de arquivo.
