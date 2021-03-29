@@ -1,14 +1,15 @@
-:- ['sudoku'].
+:- ['src/sudoku'].
 
 % Menu da aplicação.
 menu:- repeat,
     nl,
     write('=== SUDOKU ==='), nl,
-    write('1. Gerar sudoku aleatório.'), nl,
+    write('1. Gerar sudoku.'), nl,
     write('2. Resolver sudoku (solução verbosa).'), nl,
     write('3. Resolver sudoku (solução concisa).'), nl,
     write('4. Validar sudoku.'), nl,
     write('5. Encerrar.'), nl,
+    write('Digite o número seguido de um ponto final e pressione Enter.'), nl,
     read(X),
     option(X),
     X == 0,

@@ -8,10 +8,10 @@ get_lines(L, Path):-
       close(In)
     ).
   
-  read_data(In, L):-
-    read_term(In, H, []),
-    (   H == end_of_file
-    ->  L = []
-    ;   L = [H|T],
-        read_data(In,T)
-    ).
+read_data(In, L):-
+  read_term(In, H, []),
+  (   H == end_of_file
+  ->  L = []
+  ;   L = [H|T],
+  read_data(In,T)
+  ).

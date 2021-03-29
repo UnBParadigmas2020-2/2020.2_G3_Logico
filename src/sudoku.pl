@@ -68,26 +68,26 @@ lista de listas (as linhas da grade) de tamanho 9, ambas. São 9 linhas ao todo,
 */
 sudoku_short(Rows) :-
 
-% Define o número de linhas da grade.
-length(Rows, 9),
+    % Define o número de linhas da grade.
+    length(Rows, 9),
 
-% Define o número de elementos em cada linha.
-maplist(same_length(Rows), Rows),
+    % Define o número de elementos em cada linha.
+    maplist(same_length(Rows), Rows),
 
-% Adiciona todas as linhas na lista Sudoku e determina que os valores na lista variam entre 1 e 9.
-append(Rows, Frame),
-Frame ins 1..9,
+    % Adiciona todas as linhas na lista Sudoku e determina que os valores na lista variam entre 1 e 9.
+    append(Rows, Frame),
+    Frame ins 1..9,
 
-% Determina que não podem haver elementos repetidos em uma dada linha ou em uma dada coluna (linhas transpostas).
-maplist(all_distinct, Rows),
-transpose(Rows, Columns),
-maplist(all_distinct, Columns),
+    % Determina que não podem haver elementos repetidos em uma dada linha ou em uma dada coluna (linhas transpostas).
+    maplist(all_distinct, Rows),
+    transpose(Rows, Columns),
+    maplist(all_distinct, Columns),
 
-% Divide as linhas do Sudoku em blocos de três linhas cada.
-Rows = [As, Bs, Cs, Ds, Es, Fs, Gs, Hs, Is],
-squares(As, Bs, Cs),
-squares(Ds, Es, Fs),
-squares(Gs, Hs, Is).
+    % Divide as linhas do Sudoku em blocos de três linhas cada.
+    Rows = [As, Bs, Cs, Ds, Es, Fs, Gs, Hs, Is],
+    squares(As, Bs, Cs),
+    squares(Ds, Es, Fs),
+    squares(Gs, Hs, Is).
 
 /*Predicado que define os subgrupos na tabela do Sudoku.
 Para cada grupo de três linhas, os três primeiros elementos
@@ -101,18 +101,10 @@ squares([N1,N2,N3|Next1], [N4,N5,N6|Next2], [N7,N8,N9|Next3]) :-
 
 
 
-% Gera uma tabela sudoku.
-generate:-
-    sudoku_short(L),
-    maplist(label, L),
-    forall(member(R,L), (print(R),nl)).
-
-
-
 % Valida e calcula a resposta usando a solução concisa.
 solve_short:-
     is_valid,
-    get_lines(P, 'sudoku.txt'),
+    get_lines(P, 'sudoku_frames/sudoku.txt'),
     time(sudoku_short(P)),
     maplist(label, P),
     forall(member(R,P), (print(R),nl)).
@@ -122,7 +114,7 @@ solve_short:-
 % Valida e calcula a resposta usando a solução verbosa.
 solve_extensive:-
     is_valid,
-    get_lines(P, 'sudoku.txt'),
+    get_lines(P, 'sudoku_frames/sudoku.txt'),
     time(sudoku_extensive(P)),
     forall(member(R,P), (print(R),nl)).
 
@@ -130,8 +122,16 @@ solve_extensive:-
 
 % Valida se o sudoku fornecido respeita os fatos estabelecidos.
 is_valid:- (
-    get_lines(L, 'sudoku.txt'),
+    get_lines(L, 'sudoku_frames/sudoku.txt'),
     sudoku_short(L) ->
     nl, write('O sudoku fornecido é válido.'), nl; 
     nl, write('O sudoku fornecido não é válido.'), nl
     ).
+
+
+
+% Gera uma tabela sudoku.
+generate:-
+    sudoku_short(L),
+    maplist(label, L),
+    forall(member(R,L), (print(R),nl)).

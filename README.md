@@ -44,6 +44,8 @@ O menu será apresentado ao usuário com as opções de:
 - Verificar a validade de uma tabela sudoku (completa ou não).
 - Encerrar o programa.
 
+Para selecionar uma opção, basta digitar o número correspondente seguido de um ponto final e pressionar a tecla Enter.
+
 As opções de resolver uma tabela parcialmente preenchida apresentarão a tabela resolvida (caso possível) e também o tempo utilizado para o cálculo. Caso a tabela seja inválida (não possui solução), o programa informará ao usuário e retornará ao menu.
 
 Exemplo de saída ao requisitar a solução verbosa.
